@@ -50,7 +50,7 @@ router.put('/:id', async (req, res) => {
     const categoryData = await Category.findOne({
       where: { id: req.params.id },
     });
-    res.status(201).json(categoryData);
+    res.status(200).json(categoryData);
   } catch (error) {
     res.status(500).json(error);
   }
