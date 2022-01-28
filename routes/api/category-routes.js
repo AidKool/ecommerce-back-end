@@ -34,9 +34,10 @@ router.post('/', async (req, res) => {
     await Category.create({
       category_name: req.body.category_name,
     });
-    Category.findOne({
+    const categoryData = await Category.findOne({
       where: { category_name: req.body.category_name },
-    }).then((categoryData) => res.status(201).json(categoryData));
+    });
+    res.status(201).json(categoryData);
   } catch (error) {
     res.status(500).json(error);
   }
