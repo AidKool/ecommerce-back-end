@@ -40,7 +40,7 @@ router.post('/', async (req, res) => {
       product_name: req.body.product_name,
       price: req.body.price,
       stock: req.body.stock,
-      category: req.body.category,
+      category_id: req.body.category_id,
     });
 
     const productsData = await Product.findOne({
@@ -54,6 +54,7 @@ router.post('/', async (req, res) => {
       }));
       ProductTag.bulkCreate(productTagIdArr);
     }
+
     return res.status(201).json(productsData);
   } catch (error) {
     return res.status(500).json(error);
@@ -74,7 +75,7 @@ router.put('/:id', async (req, res) => {
         product_name: req.body.product_name,
         price: req.body.price,
         stock: req.body.stock,
-        category: req.body.category,
+        category_id: req.body.category_id,
       },
       {
         where: {
