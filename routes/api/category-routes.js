@@ -9,22 +9,24 @@ router.get('/', async (req, res) => {
     const categoriesData = await Category.findAll({
       include: [{ model: Product }],
     });
-    res.status(200).json(categoriesData);
+    return res.status(200).json(categoriesData);
   } catch (error) {
-    res.status(500).json(error);
+    return res.status(500).json(error);
   }
 });
 
 router.get('/:id', async (req, res) => {
   // find one category by its `id` value and its associated Products
   try {
-    const { id } = req.params;
-    const categoryData = await Category.findByPk(id, {
+    const categoryData = await Category.findByPk(req.params.id, {
       include: [{ model: Product }],
     });
-    res.status(200).json(categoryData);
+    if (!categoryData) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+    return res.status(200).json(categoryData);
   } catch (error) {
-    res.status(500).json(error);
+    return res.status(500).json(error);
   }
 });
 
@@ -37,9 +39,9 @@ router.post('/', async (req, res) => {
     const categoryData = await Category.findOne({
       where: { category_name: req.body.category_name },
     });
-    res.status(201).json(categoryData);
+    return res.status(201).json(categoryData);
   } catch (error) {
-    res.status(500).json(error);
+    return res.status(500).json(error);
   }
 });
 
@@ -50,21 +52,27 @@ router.put('/:id', async (req, res) => {
     const categoryData = await Category.findOne({
       where: { id: req.params.id },
     });
-    res.status(200).json(categoryData);
+    if (!categoryData) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+    return res.status(200).json(categoryData);
   } catch (error) {
-    res.status(500).json(error);
+    return res.status(500).json(error);
   }
 });
 
 router.delete('/:id', async (req, res) => {
   // delete a category by its `id` value
   try {
-    const deletedCategory = await Category.destroy({
+    const categoryData = await Category.destroy({
       where: { id: req.params.id },
     });
-    res.status(200).json(deletedCategory);
+    if (!categoryData) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+    return res.status(200).json(categoryData);
   } catch (error) {
-    res.status(500).json(error);
+    return res.status(500).json(error);
   }
 });
 
