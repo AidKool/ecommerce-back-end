@@ -43,17 +43,22 @@ router.post('/', async (req, res) => {
       category_id: req.body.category_id,
     });
 
-    const productsData = await Product.findOne({
+    const dataPassed = await Product.findOne({
       where: { product_name: req.body.product_name },
     });
 
     if (req.body.tagIds.length) {
       const productTagIdArr = req.body.tagIds.map((tag_id) => ({
-        product_id: productsData.id,
+        product_id: dataPassed.id,
         tag_id,
       }));
       ProductTag.bulkCreate(productTagIdArr);
     }
+
+    const productsData = await Product.findOne({
+      where: { product_name: req.body.product_name },
+      include: [{ model: Category }, { model: Tag, through: ProductTag }],
+    });
 
     return res.status(201).json(productsData);
   } catch (error) {
@@ -110,7 +115,7 @@ router.put('/:id', async (req, res) => {
     await ProductTag.bulkCreate(newProductTags);
 
     const productData = await Product.findByPk(req.params.id, {
-      include: [{ model: Category }, { model: Tag }],
+      include: [{ model: Category }, { model: Tag, through: ProductTag }],
     });
     return res.status(200).json(productData);
   } catch (error) {
