@@ -48,9 +48,9 @@ router.post('/', async (req, res) => {
     });
 
     if (req.body.tagIds.length) {
-      const productTagIdArr = req.body.tagIds.map((tag_id) => ({
+      const productTagIdArr = req.body.tagIds.map((tagId) => ({
         product_id: dataPassed.id,
-        tag_id,
+        tag_id: tagId,
       }));
       ProductTag.bulkCreate(productTagIdArr);
     }
@@ -95,19 +95,19 @@ router.put('/:id', async (req, res) => {
     });
 
     // get list of current tag_ids
-    const productTagIds = productTags.map(({ tag_id }) => tag_id);
+    const productTagIds = productTags.map(({ tag_id: tagId }) => tagId);
 
     // create filtered list of new tag_ids
     const newProductTags = req.body.tagIds
-      .filter((tag_id) => !productTagIds.includes(tag_id))
-      .map((tag_id) => ({
+      .filter((tagId) => !productTagIds.includes(tagId))
+      .map((tagId) => ({
         product_id: req.params.id,
-        tag_id,
+        tag_id: tagId,
       }));
 
     // figure out which ones to remove
     const productTagsToRemove = productTags
-      .filter(({ tag_id }) => !req.body.tagIds.includes(tag_id))
+      .filter(({ tag_id: tagId }) => !req.body.tagIds.includes(tagId))
       .map(({ id }) => id);
 
     // run both actions
